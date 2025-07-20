@@ -23,7 +23,7 @@ export const createCountry = async (req, res, next) => {
     // 3. ส่ง success response
     return res.status(201).json({
       success: true,
-      message: "สร้างข้อมูลประเทศสำเร็จ",
+      message: "Successfully created the country data.",
       data: {
         country: newCountry,
       },
