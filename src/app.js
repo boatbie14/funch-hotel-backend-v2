@@ -5,6 +5,7 @@ import dotenv from "dotenv";
 import { errorHandler } from "./middlewares/error-handler.middleware.js";
 import userRoutes from "./routes/user.route.js";
 import countryRoutes from "./routes/country.route.js";
+import cityRoutes from "./routes/city.routes.js";
 
 // Load environment variables
 dotenv.config();
@@ -31,9 +32,10 @@ app.use(cors(corsOptions));
 app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ extended: true, limit: "10mb" }));
 
-// API Routes
+// ## API Routes
 app.use("/api/users", userRoutes);
 app.use("/api/country", countryRoutes);
+app.use("/api/city", cityRoutes);
 
 // Error Handler Middleware
 app.use(errorHandler);
