@@ -3,9 +3,11 @@ import cors from "cors";
 import helmet from "helmet";
 import dotenv from "dotenv";
 import { errorHandler } from "./middlewares/error-handler.middleware.js";
-import userRoutes from "./routes/user.route.js";
-import countryRoutes from "./routes/country.route.js";
+// ## routes
+import userRoutes from "./routes/user.routes.js";
+import countryRoutes from "./routes/country.routes.js";
 import cityRoutes from "./routes/city.routes.js";
+import hotelRoutes from "./routes/hotel.routes.js";
 
 // Load environment variables
 dotenv.config();
@@ -36,6 +38,7 @@ app.use(express.urlencoded({ extended: true, limit: "10mb" }));
 app.use("/api/users", userRoutes);
 app.use("/api/country", countryRoutes);
 app.use("/api/city", cityRoutes);
+app.use("/api/hotel", hotelRoutes);
 
 // Error Handler Middleware
 app.use(errorHandler);
