@@ -190,3 +190,113 @@ export const validatePagination = [
  * Usage: makeOptional(validatePhone('phone2'))
  */
 export const makeOptional = (validator) => validator.optional({ nullable: true, checkFalsy: true });
+
+// เพิ่มใน common.validator.js
+
+/**
+ * Time validator - HH:MM format (24-hour)
+ * Examples: "14:00", "09:30", "23:59"
+ */
+export const validateTime = (fieldName) =>
+  body(fieldName)
+    .notEmpty()
+    .withMessage(`${fieldName} is required`)
+    .matches(/^([01]?[0-9]|2[0-3]):[0-5][0-9]$/)
+    .withMessage(`${fieldName} must be in HH:MM format (24-hour)`);
+
+/**
+ * Google Maps link validator
+ * Supports both short links (maps.app.goo.gl) and full links (maps.google.com)
+ */
+export const validateGoogleMapsLink = (fieldName = "google_map_link") =>
+  body(fieldName)
+    .notEmpty()
+    .withMessage("Google Maps link is required")
+    .isURL()
+    .withMessage("Invalid URL format")
+    .matches(/^https:\/\/(maps\.app\.goo\.gl\/[a-zA-Z0-9]+|maps\.google\.com\/.+|goo\.gl\/maps\/[a-zA-Z0-9]+)/)
+    .withMessage("Invalid Google Maps link format");
+
+/**
+ * URL validator - general purpose
+ */
+export const validateURL = (fieldName, required = true) => {
+  const validator = body(fieldName);
+
+  if (!required) {
+    return validator.optional({ nullable: true, checkFalsy: true }).isURL().withMessage(`Invalid ${fieldName} URL format`);
+  }
+
+  return validator.notEmpty().withMessage(`${fieldName} is required`).isURL().withMessage(`Invalid ${fieldName} URL format`);
+};
+
+/**
+ * Array of UUIDs validator
+ * For validating arrays like city_ids, option_ids
+ */
+export const validateUUIDArray = (fieldName, required = false, minItems = 0) => {
+  const validator = body(fieldName);
+
+  if (!required && minItems === 0) {
+    return validator
+      .optional({ nullable: true })
+      .isArray()
+      .withMessage(`${fieldName} must be an array`)
+      .custom((value) => {
+        if (!Array.isArray(value)) return true; // Already validated above
+
+        for (const item of value) {
+          if (!/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(item)) {
+            throw new Error(`Invalid UUID format in ${fieldName}`);
+          }
+        }
+        return true;
+      });
+  }
+
+  return validator
+    .notEmpty()
+    .withMessage(`${fieldName} is required`)
+    .isArray({ min: minItems })
+    .withMessage(`${fieldName} must be an array with at least ${minItems} item(s)`)
+    .custom((value) => {
+      for (const item of value) {
+        if (!/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(item)) {
+          throw new Error(`Invalid UUID format in ${fieldName}`);
+        }
+      }
+      return true;
+    });
+};
+
+/**
+ * Text content validator with min/max length
+ * For fields like description, excerpt
+ */
+export const validateTextContent = (fieldName, minLength = 10, maxLength = 5000) =>
+  body(fieldName)
+    .notEmpty()
+    .withMessage(`${fieldName} is required`)
+    .isLength({ min: minLength, max: maxLength })
+    .withMessage(`${fieldName} must be between ${minLength}-${maxLength} characters`)
+    .trim();
+
+/**
+ * Slug validator
+ * For SEO-friendly URLs: lowercase, hyphens only
+ */
+export const validateSlug = (fieldName = "slug") =>
+  body(fieldName)
+    .notEmpty()
+    .withMessage("Slug is required")
+    .matches(/^[a-z0-9]+(?:-[a-z0-9]+)*$/)
+    .withMessage("Slug must be lowercase letters, numbers, and hyphens only")
+    .isLength({ min: 3, max: 100 })
+    .withMessage("Slug must be between 3-100 characters");
+
+/**
+ * Language code validator
+ * For language selection: th, en
+ */
+export const validateLanguageCode = (fieldName = "lang") =>
+  body(fieldName).notEmpty().withMessage("Language is required").isIn(["th", "en"]).withMessage("Language must be 'th' or 'en'");
