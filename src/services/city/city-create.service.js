@@ -21,7 +21,7 @@ export async function createCity(cityData) {
     const countryExists = await cityCreateRepository.countryExists(cleanedData.country_id);
 
     if (!countryExists) {
-      const error = new Error("ไม่พบประเทศที่ระบุ");
+      const error = new Error("The specified country was not found.");
       error.code = "COUNTRY_NOT_FOUND";
       error.statusCode = 404;
       throw error;
@@ -31,7 +31,7 @@ export async function createCity(cityData) {
     const nameExists = await cityCreateRepository.nameExists(cleanedData.name_th, cleanedData.name_en, cleanedData.country_id);
 
     if (nameExists) {
-      const error = new Error("ชื่อเมืองนี้มีอยู่แล้วในประเทศนี้");
+      const error = new Error("This city name already exists in this country.");
       error.code = "CITY_EXISTS";
       error.statusCode = 409;
       throw error;

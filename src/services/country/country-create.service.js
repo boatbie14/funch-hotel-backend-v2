@@ -20,7 +20,7 @@ export async function createCountry(countryData) {
     const nameExists = await countryCreateRepository.nameExists(cleanedData.name_th, cleanedData.name_en);
 
     if (nameExists) {
-      const error = new Error("ชื่อประเทศนี้มีอยู่แล้ว");
+      const error = new Error("This country name already exists.");
       error.code = "COUNTRY_EXISTS";
       error.statusCode = 409;
       throw error;
