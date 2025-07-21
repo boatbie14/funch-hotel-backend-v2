@@ -8,6 +8,7 @@ import userRoutes from "./routes/user.routes.js";
 import countryRoutes from "./routes/country.routes.js";
 import cityRoutes from "./routes/city.routes.js";
 import hotelRoutes from "./routes/hotel.routes.js";
+import seoRoutes from "./routes/seo-metadata.routes.js";
 
 // Load environment variables
 dotenv.config();
@@ -35,10 +36,11 @@ app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ extended: true, limit: "10mb" }));
 
 // ## API Routes
-app.use("/api/users", userRoutes);
+app.use("/api/user", userRoutes);
 app.use("/api/country", countryRoutes);
 app.use("/api/city", cityRoutes);
 app.use("/api/hotel", hotelRoutes);
+app.use("/api/seo-metadata", seoRoutes);
 
 // Error Handler Middleware
 app.use(errorHandler);
