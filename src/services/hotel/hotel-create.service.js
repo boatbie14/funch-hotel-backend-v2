@@ -9,21 +9,21 @@ import { hotelCreateRepository } from "../../repositories/hotel/hotel-create.rep
  */
 export async function createHotel(hotelData) {
   try {
-    // 1. Clean and prepare data
+    // 1. Clean and prepare data with safe trimming
     const cleanedData = {
-      name_th: hotelData.name_th.trim(),
-      name_en: hotelData.name_en.trim(),
-      excerpt_th: hotelData.excerpt_th.trim(),
-      excerpt_en: hotelData.excerpt_en.trim(),
-      description_th: hotelData.description_th.trim(),
-      description_en: hotelData.description_en.trim(),
+      name_th: hotelData.name_th?.trim() || "",
+      name_en: hotelData.name_en?.trim() || "",
+      excerpt_th: hotelData.excerpt_th?.trim() || "",
+      excerpt_en: hotelData.excerpt_en?.trim() || "",
+      description_th: hotelData.description_th?.trim() || "",
+      description_en: hotelData.description_en?.trim() || "",
       checkin_time: hotelData.checkin_time,
       checkout_time: hotelData.checkout_time,
-      image: hotelData.image.trim(),
-      location_txt_th: hotelData.location_txt_th.trim(),
-      location_txt_en: hotelData.location_txt_en.trim(),
-      google_map_link: hotelData.google_map_link.trim(),
-      is_active: hotelData.is_active,
+      image: hotelData.image?.trim() || "",
+      location_txt_th: hotelData.location_txt_th?.trim() || "",
+      location_txt_en: hotelData.location_txt_en?.trim() || "",
+      google_map_link: hotelData.google_map_link?.trim() || "",
+      is_active: hotelData.is_active ?? true,
       city_ids: hotelData.city_ids || [],
       hotel_option_ids: hotelData.hotel_option_ids || [],
     };

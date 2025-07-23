@@ -1,8 +1,7 @@
 // validators/country/country-create.validator.js
 
 import { body } from "express-validator";
-import { validateRequired, validateLength } from "../common.validator.js";
-import { validateImageUrl } from "../image.validator.js";
+import { validateRequired, validateLength, validateEnglishPattern, validateSupabaseStorageUrl } from "../common.validator.js";
 
 /**
  * Validation rules for country creation
@@ -17,11 +16,8 @@ export const validateCountryCreate = [
   // English name - required, 2-100 characters, only letters/spaces/hyphens
   validateRequired("name_en"),
   validateLength("name_en", 2, 100),
-  body("name_en")
-    .matches(/^[a-zA-Z\s\-']+$/)
-    .withMessage("Country name (English) can only contain letters, spaces, hyphens, and apostrophes")
-    .trim(),
+  validateEnglishPattern("name_en"),
 
   // Image URL - optional, from Supabase storage
-  validateImageUrl("image", false), // false = not required
+  validateSupabaseStorageUrl("image", false), // false = not required
 ];

@@ -1,8 +1,14 @@
 //validators/user/user-register.validator.js
 
 import { body } from "express-validator";
-import { validateEmail, validatePassword, validateRequired, validateLength, validatePhone } from "../common.validator.js";
-import { validateImageUrl } from "../image.validator.js";
+import {
+  validateEmail,
+  validatePassword,
+  validateRequired,
+  validateLength,
+  validatePhone,
+  validateSupabaseStorageUrl,
+} from "../common.validator.js";
 
 /**
  * Birthday validator - must be in the past and user must be 18+
@@ -74,5 +80,5 @@ export const validateUserRegister = [
   validatePhone("phone2").optional({ nullable: true, checkFalsy: true }),
 
   // User image - optional
-  validateImageUrl("user_image", false),
+  validateSupabaseStorageUrl("user_image", false),
 ];

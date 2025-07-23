@@ -9,6 +9,8 @@ export const errorHandler = (err, req, res, next) => {
     details: err.details,
   });
 
+  console.error("Error Stack Trace:", err.stack);
+
   // Determine status code (default to 500 if not specified)
   const statusCode = err.statusCode || 500;
 

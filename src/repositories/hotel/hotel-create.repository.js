@@ -11,32 +11,37 @@ import { v4 as uuidv4 } from "uuid";
 export async function createHotel(hotelData) {
   try {
     const id = uuidv4();
-    const now = new Date().toISOString();
+
+    // Log data before insert
+    const insertData = {
+      id,
+      name_th: hotelData.name_th,
+      name_en: hotelData.name_en,
+      excerpt_th: hotelData.excerpt_th,
+      excerpt_en: hotelData.excerpt_en,
+      description_th: hotelData.description_th,
+      description_en: hotelData.description_en,
+      checkin_time: hotelData.checkin_time,
+      checkout_time: hotelData.checkout_time,
+      image: hotelData.image,
+      location_txt_th: hotelData.location_txt_th,
+      location_txt_en: hotelData.location_txt_en,
+      google_map_link: hotelData.google_map_link,
+      is_active: hotelData.is_active ?? true,
+    };
+
+    console.log("Inserting hotel data:", insertData);
 
     // Start a Supabase transaction
-    const { data: hotel, error: hotelError } = await supabase
-      .from("hotels")
-      .insert({
-        id,
-        name_th: hotelData.name_th,
-        name_en: hotelData.name_en,
-        excerpt_th: hotelData.excerpt_th,
-        excerpt_en: hotelData.excerpt_en,
-        description_th: hotelData.description_th,
-        description_en: hotelData.description_en,
-        checkin_time: hotelData.checkin_time,
-        checkout_time: hotelData.checkout_time,
-        image: hotelData.image,
-        location_txt_th: hotelData.location_txt_th,
-        location_txt_en: hotelData.location_txt_en,
-        google_map_link: hotelData.google_map_link,
-        create_at: now,
-        is_active: hotelData.is_active ?? true,
-      })
-      .select()
-      .single();
+    const { data: hotel, error: hotelError } = await supabase.from("hotels").insert(insertData).select().single();
 
     if (hotelError) {
+      console.error("Supabase error details:", {
+        code: hotelError.code,
+        message: hotelError.message,
+        details: hotelError.details,
+        hint: hotelError.hint,
+      });
       handleHotelError(hotelError);
     }
 
