@@ -1,8 +1,7 @@
 // validators/city/city-create.validator.js
 
 import { body } from "express-validator";
-import { validateRequired, validateLength, validateUUID } from "../common.validator.js";
-import { validateImageUrl } from "../image.validator.js";
+import { validateRequired, validateLength, validateUUID, validateEnglishPattern, validateSupabaseStorageUrl } from "../common.validator.js";
 
 /**
  * Validation rules for city creation
@@ -17,14 +16,11 @@ export const validateCityCreate = [
   // English name - required, 2-100 characters, only letters/spaces/hyphens
   validateRequired("name_en"),
   validateLength("name_en", 2, 100),
-  body("name_en")
-    .matches(/^[a-zA-Z\s\-']+$/)
-    .withMessage("City name (English) can only contain letters, spaces, hyphens, and apostrophes")
-    .trim(),
+  validateEnglishPattern("name_en"),
 
   // Country ID - required, must be valid UUID
   validateUUID("country_id", "body"),
 
   // Image URL - optional, from Supabase storage
-  validateImageUrl("image", false), // false = not required
+  validateSupabaseStorageUrl("image", false), // false = not required
 ];
