@@ -170,10 +170,48 @@ export const validatePrice = (fieldName = "price") =>
     });
 
 /**
+ * Decimal/Float validator with precision
+ * For fields like room_size (32.5 sqm)
+ */
+export const validateDecimal = (fieldName, min = 0, max = 9999.99) =>
+  body(fieldName)
+    .notEmpty()
+    .withMessage(`${fieldName} is required`)
+    .isFloat({ min, max })
+    .withMessage(`${fieldName} must be between ${min}-${max}`)
+    .toFloat();
+
+/**
  * Validate sort order field
  */
 export const validateSortOrder = (fieldName = "sort_order") =>
   body(fieldName).optional({ nullable: true }).isInt({ min: 0, max: 999 }).withMessage("Sort order must be between 0-999").toInt();
+
+/**
+ * Positive integer validator (> 0)
+ * For counts like max_adult, total_room
+ */
+export const validatePositiveInteger = (fieldName, min = 1, max = 999) =>
+  body(fieldName)
+    .notEmpty()
+    .withMessage(`${fieldName} is required`)
+    .isInt({ min, max })
+    .withMessage(`${fieldName} must be an integer between ${min}-${max}`)
+    .toInt();
+
+/**
+ * Weekly price object validator
+ * For base_price with 7 days
+ */
+export const validateWeeklyPrices = (parentField) => [
+  validatePrice(`${parentField}.price_sun`),
+  validatePrice(`${parentField}.price_mon`),
+  validatePrice(`${parentField}.price_tue`),
+  validatePrice(`${parentField}.price_wed`),
+  validatePrice(`${parentField}.price_thu`),
+  validatePrice(`${parentField}.price_fri`),
+  validatePrice(`${parentField}.price_sat`),
+];
 
 // ========================================
 // DATE & TIME VALIDATORS
@@ -242,6 +280,33 @@ export const validateTime = (fieldName) =>
     .withMessage(`${fieldName} is required`)
     .matches(/^([01]?[0-9]|2[0-3]):[0-5][0-9]$/)
     .withMessage(`${fieldName} must be in HH:MM format (24-hour)`);
+
+/**
+ * Date overlap validator for array items
+ * Check if date ranges don't overlap
+ */
+export const validateNoDateOverlap = (fieldName, startField = "start_date", endField = "end_date") =>
+  body(fieldName).custom((array) => {
+    if (!Array.isArray(array) || array.length < 2) return true;
+
+    for (let i = 0; i < array.length; i++) {
+      for (let j = i + 1; j < array.length; j++) {
+        const range1 = array[i];
+        const range2 = array[j];
+
+        const start1 = new Date(range1[startField]);
+        const end1 = new Date(range1[endField]);
+        const start2 = new Date(range2[startField]);
+        const end2 = new Date(range2[endField]);
+
+        // Check overlap
+        if (start1 <= end2 && start2 <= end1) {
+          throw new Error(`Date ranges overlap between items ${i + 1} and ${j + 1}`);
+        }
+      }
+    }
+    return true;
+  });
 
 // ========================================
 // URL & LINK VALIDATORS
