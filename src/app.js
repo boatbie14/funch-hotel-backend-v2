@@ -10,6 +10,7 @@ import cityRoutes from "./routes/city.routes.js";
 import hotelRoutes from "./routes/hotel.routes.js";
 import seoRoutes from "./routes/seo-metadata.routes.js";
 import imageCollectionRoutes from "./routes/image-collection.routes.js";
+import roomRoutes from "./routes/room.routes.js";
 
 // Load environment variables
 dotenv.config();
@@ -43,6 +44,7 @@ app.use("/api/city", cityRoutes);
 app.use("/api/hotel", hotelRoutes);
 app.use("/api/seo-metadata", seoRoutes);
 app.use("/api/image-collection", imageCollectionRoutes);
+app.use("/api/room", roomRoutes);
 
 // Error Handler Middleware
 app.use(errorHandler);
