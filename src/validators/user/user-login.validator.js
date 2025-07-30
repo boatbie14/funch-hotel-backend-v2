@@ -1,6 +1,6 @@
 // validators/user/user-login.validator.js
 
-import { body } from "express-validator";
+import { validateEmail, validateRequired } from "../common.validator.js";
 
 /**
  * Validation rules for user login
@@ -8,8 +8,8 @@ import { body } from "express-validator";
  */
 export const validateUserLogin = [
   // Email - required, must be valid format
-  body("email").notEmpty().withMessage("Email is required").isEmail().withMessage("Invalid email format").normalizeEmail().trim(),
+  validateEmail("email"),
 
   // Password - required (no need to validate format for login)
-  body("password").notEmpty().withMessage("Password is required"),
+  validateRequired("password"),
 ];

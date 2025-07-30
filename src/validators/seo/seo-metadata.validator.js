@@ -15,9 +15,12 @@ const normalizeSlug = (slug) => {
  * GET /api/seo-metadata?slug={slug}
  */
 export const validateSeoMetadataGet = [
-  // Required check
-  validateRequired("slug", "query"),
+  // Make slug optional to allow empty values
+  query("slug")
+    .optional({ checkFalsy: false }) // Allow empty string
+    .isString()
+    .withMessage("Slug must be a string"),
 
-  // Normalize slug
+  // Normalize slug - this will convert empty/root to "home"
   query("slug").customSanitizer(normalizeSlug),
 ];
